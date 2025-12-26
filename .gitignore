@@ -1,4 +1,5 @@
 .pio
+main/CMakeLists.txt
 .piolibdeps
 .pioenvs
 sdkconfig.*
