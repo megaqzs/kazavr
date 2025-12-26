@@ -1,25 +1,33 @@
-#include <avr/io.h>
-#include <util/delay.h>
-#include <avr/interrupt.h>
-#include <uart.h>
+#if 0
+#include <hal/uart.h>
+#include <stdio.h>
 #include "matrix.h"
+#ifdef __AVR_ATmega328P__
+#include <util/delay.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
 #include <avr/sleep.h>
 #include <avr/wdt.h>
 #include <avr/power.h>
+#endif
 #include <wire.h>
 #include <Arduino.h>
 
+#ifdef __AVR_ATmega328P__
 // watchdog interrupt
 ISR (WDT_vect) 
 {
    wdt_disable();  // disable watchdog
 }  // end of WDT_vect
+#endif
 
 void setup() {
+#ifdef __AVR_ATmega328P__
     clock_prescale_set(clock_div_2);
     digitalWrite(LED_BUILTIN, HIGH);
     delay(500);
     digitalWrite(LED_BUILTIN, LOW);
+#endif
     setupPins();
     uart_init();
 }
@@ -27,6 +35,7 @@ void loop()
 {
   scan_loop();
   delayMicroseconds(200);
+#ifdef __AVR_ATmega328P__
   // disable ADC
   ADCSRA = 0;  
 
@@ -46,9 +55,11 @@ void loop()
   MCUCR = bit (BODS) | bit (BODSE);
   MCUCR = bit (BODS); 
   interrupts ();             // guarantees next instruction executed
-  sleep_cpu ();  
+  sleep_cpu ();
   
   // cancel sleep as a precaution
   sleep_disable();
+#endif
 }
 
+#endif

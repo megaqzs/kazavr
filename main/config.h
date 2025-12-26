@@ -1,4 +1,4 @@
-#define BAUD 115200
+#define BAUD 500000 // 115200 is the default for nice nano
 
 #define ROW_STRIDE 12
 

@@ -57,15 +57,12 @@ static int split_peripheral_wired_report_event(const struct zmk_split_transport_
 
     //LOG_HEXDUMP_DBG(&env, sizeof(env.prefix) + payload_size, "Payload");
 
-    fwrite((uint8_t *)&env, 1, sizeof(env.prefix) + payload_size, stdout); //ring_buf_put(&chosen_tx_buf, (uint8_t *)&env, sizeof(env.prefix) + payload_size);
-    //if (put != sizeof(env.prefix) + payload_size) {
-    //    LOG_WRN("Failed to put the whole message (%d vs %d)", put,
-    //            sizeof(env.prefix) + payload_size);
-    //}
-    fwrite((uint8_t *)&postfix, 1, sizeof(postfix), stdout); // ring_buf_put(&chosen_tx_buf, (uint8_t *)&postfix, sizeof(postfix));
-    //if (put != sizeof(postfix)) {
-    //    LOG_WRN("Failed to put the whole message (%d vs %d)", put, sizeof(postfix));
-    //}
+    payload_size += sizeof(env.prefix);
+    uint8_t i;
+    for (i = 0; i < payload_size; i++)
+        putchar(((char*) &env)[i]);
+    for (i = 0; i < sizeof(postfix); i++)
+        putchar(((char*) &postfix)[i]);
 
 //#if !IS_HALF_DUPLEX_MODE
 //    begin_tx();

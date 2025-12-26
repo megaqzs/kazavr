@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include "config.h"
 #include <zmk/debounce.h>
 
 static uint32_t get_counter(const struct zmk_debounce_state *state,

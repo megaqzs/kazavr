@@ -1,7 +1,8 @@
+#ifdef __AVR_ATmega328P__
 #include <avr/io.h>
 #include <stdio.h>
 #include <config.h>
-#include <uart.h>
+#include <hal/uart.h>
 static int uart_putchar(char c, FILE *stream)
 {
     // Wait for empty transmit buffer
@@ -36,4 +37,4 @@ void uart_init(void)
     // Redirect stdout to UART
     stdout = &uart_output;
 }
-
+#endif
