@@ -129,7 +129,7 @@ static inline void setPinDir(pingroup_t pins, int state) {
 
 }
 
-inline unsigned int getPinPullEn(pingroup_t pins) {
+static inline unsigned int getPinPullEn(pingroup_t pins) {
     unsigned int val = 0;
     switch (pins.group) {
         case PB:
@@ -146,7 +146,7 @@ inline unsigned int getPinPullEn(pingroup_t pins) {
 }
 
 // 1 is input 0 is output
-inline unsigned int getPinDir(pingroup_t pins) {
+static inline unsigned int getPinDir(pingroup_t pins) {
     unsigned int val = 0;
     switch (pins.group) {
         case PB:
@@ -163,7 +163,7 @@ inline unsigned int getPinDir(pingroup_t pins) {
 }
 
 // get input pin state otherwise get output value
-inline unsigned int getPinState(pingroup_t pins) {
+static inline unsigned int getPinState(pingroup_t pins) {
     unsigned int val = 0;
     switch (pins.group) {
         case PB:
@@ -179,11 +179,11 @@ inline unsigned int getPinState(pingroup_t pins) {
     return val;
 }
 
-inline unsigned int getPinPull(pingroup_t pins) {
+static inline unsigned int getPinPull(pingroup_t pins) {
     return 0;
 }
 
-inline void setPinPull(pingroup_t pins, int state) {
+static inline void setPinPull(pingroup_t pins, int state) {
 }
 
 #define setPinState setPinPullEn
