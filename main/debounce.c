@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 The ZMK Contributors
+ * Copyright (c) 2021 The ZMK Contributors, 2026 megaqzs
  *
  * SPDX-License-Identifier: MIT
  */
@@ -7,9 +7,15 @@
 #include "config.h"
 #include <zmk/debounce.h>
 
+#ifdef DEFER_DEBOUNCE
+static uint32_t get_threshold(const struct zmk_debounce_state *state,
+                              const struct zmk_debounce_config *config) {
+    return state->pressed ? config->debounce_release_ms : config->debounce_press_ms;
+#else
 static uint32_t get_counter(const struct zmk_debounce_state *state,
                               const struct zmk_debounce_config *config) {
     return !state->pressed ? config->debounce_release_ms : config->debounce_press_ms;
+#endif
 }
 
 static void increment_counter(struct zmk_debounce_state *state, const int elapsed_ms) {
@@ -42,15 +48,21 @@ void zmk_debounce_update(struct zmk_debounce_state *state, const bool active, co
         return;
     }
 
-    if (state->counter == 0) {
-        state->counter = get_counter(state, config);
-        goto state_change;
-    }
+#ifdef DEFER_DEBOUNCE
+    const uint32_t flip_threshold = get_threshold(state, config);
 
-    increment_counter(state, elapsed_ms);
-    if (state->counter < config->debounce_release_ms + config->debounce_press_ms) {
+    if (state->counter < flip_threshold) {
+        increment_counter(state, elapsed_ms);
         return;
     }
+#else
+    if (state->counter == 0) {
+        state->counter = get_counter(state, config);
+    }
+    else if (increment_counter(state, elapsed_ms), state->counter < config->debounce_release_ms + config->debounce_press_ms) {
+        return;
+    }
+#endif
 
     state->counter = 0;
 state_change:
