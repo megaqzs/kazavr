@@ -5,4 +5,7 @@
 //#define PULL_HIGH_LOW
 //#define PULL_HIGH_NC
 #define PULL_TRISTATE
+
+// add support for pingroup isrs
+#define PG_ISR
 #endif

@@ -1,4 +1,5 @@
 #ifdef __AVR_ATmega328P__
+#include <quirks.h>
 #include <hal/uart.h>
 #include <pins.h>
 #include <stdio.h>
@@ -9,6 +10,7 @@
 #include <avr/sleep.h>
 #include <avr/wdt.h>
 #include <avr/power.h>
+#include "../config.h"
 #include <delay.h>
 #include <wire.h>
 
@@ -21,14 +23,15 @@ ISR (WDT_vect)
 int main()
 {
   clock_prescale_set(clock_div_2);
-  setPinState(LED_BUILTIN, HIGH);
+#ifdef LED
+  setPinState(LED, HIGH);
   mdelayc(500);
-  setPinState(LED_BUILTIN, LOW);
+  setPinState(LED, LOW);
+#endif
   setupPins();
   uart_init();
   while (true) {
     scan_loop();
-    udelayc(200);
     // disable ADC
     ADCSRA = 0;  
   

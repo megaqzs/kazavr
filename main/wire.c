@@ -23,7 +23,6 @@ static size_t get_payload_data_size(const struct zmk_split_transport_peripheral_
 }
 
 
-
 static int split_peripheral_wired_report_event(const struct zmk_split_transport_peripheral_event *event) {
     size_t data_size = get_payload_data_size(event);
     if (data_size < 0) {
@@ -59,6 +58,7 @@ static int split_peripheral_wired_report_event(const struct zmk_split_transport_
 
     payload_size += sizeof(env.prefix);
     uint8_t i;
+
     for (i = 0; i < payload_size; i++)
         putchar(((char*) &env)[i]);
     for (i = 0; i < sizeof(postfix); i++)

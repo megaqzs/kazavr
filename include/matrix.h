@@ -1,5 +1,11 @@
+#include <stdbool.h>
 #include <stdint.h>
-uint8_t readRowRaw(uint8_t r);
-void setupPins();
+#include <quirks.h>
+#include <pins.h>
+void matrix_init();
 
-void scan_loop();
+#ifdef PG_ISR
+void matrix_passive_scan(bool passive);
+#endif
+
+bool matrix_scan(const pingroup_t **sgrps, unsigned int *sgrps_size, bool *scan_dir);

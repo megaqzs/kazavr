@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <hal/uart.h>
+#include "config.h"
 
 #define BUF_SIZE_BITS 5
 typedef struct {
@@ -15,11 +16,9 @@ typedef struct {
 static rbuff_t tx = {{0}, 0, 0};
 
 // Tie putchar() to printf
-int putchar(int c)
-{
+int putchar(int c) {
     uint8_t newj = (tx.j+1) % sizeof(tx.buff);
-    while (newj == tx.i)
-        __no_operation();
+    //while (newj == tx.i);
     tx.buff[tx.j] = c;
     tx.j = newj;
     IE2 |= UCA0TXIE;                       // Enable USCI_A0 TX interrupt since we added a character to the buffer
@@ -27,8 +26,7 @@ int putchar(int c)
 }
 
 #pragma vector=USCIAB0TX_VECTOR
-__interrupt void USCI0TX_ISR(void)
-{
+__interrupt void USCI0TX_ISR(void) {
     // Write the character to the TX buffer
     UCA0TXBUF = tx.buff[tx.i];
     tx.i = (tx.i+1) % sizeof(tx.buff);
@@ -36,20 +34,25 @@ __interrupt void USCI0TX_ISR(void)
         IE2 &= ~UCA0TXIE;          // Disable USCI_A0 TX interrupt
 }
 
-// UART init – example for SMCLK @ 1 MHz, 9600 baud
-void uart_init(void)
-{
-    WDTCTL = WDTPW + WDTHOLD;   // Stop WDT
+#define FREQ F_CPU
+#define BMULT (FREQ/BAUD)
+#define BMOD ((16*FREQ+BAUD)/BAUD/2-8*BMULT)
+
+bool tx_busy(void) {
+    return IE2 & UCA0TXIE;
+}
+
+void uart_init(void) {
     P1SEL  |= BIT1 | BIT2;      // Set P1.1 RX and P1.2 TX
     P1SEL2 |= BIT1 | BIT2;
 
     UCA0CTL1 |= UCSWRST;        // Hold USCI in reset
     UCA0CTL1 |= UCSSEL_2;       // SMCLK
 
-    // 9600 baud at 1 MHz
-    UCA0BR0 = 104;              // 1,000,000 / 9600 ≈ 104.17
-    UCA0BR1 = 0;
-    UCA0MCTL = UCBRS0;          // Modulation
+    UCA0BR0 = BMULT&0xFF;       // baud rate multiplier
+    UCA0BR1 = BMULT>>8;
+
+    UCA0MCTL = !!(BMOD&1)*0b00000001 + !!(BMOD&2)*0b01000100 + !!(BMOD&4)*0b10101010;          // Modulation
 
     UCA0CTL1 &= ~UCSWRST;       // Release reset
     IE2 &= ~UCA0TXIE;     // ensure TX interrupt disabled initially
