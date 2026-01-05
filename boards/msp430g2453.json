@@ -1,7 +1,7 @@
 {
   "build": {
     "core": "msp430",
-    "extra_flags": "-std=gnu99 -DENERGIA_ARCH_MSP430 -DENERGIA_MSP_EXP430G2453",
+    "extra_flags": "-Ofast -fverbose-asm -std=gnu99 -DENERGIA_ARCH_MSP430 -DENERGIA_MSP_EXP430G2453",
     "f_cpu": "16000000L",
     "hwids": [
       [
