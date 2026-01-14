@@ -10,7 +10,7 @@
 #include <avr/sleep.h>
 #include <avr/wdt.h>
 #include <avr/power.h>
-#include "../config.h"
+#include "config.h"
 #include <delay.h>
 #include <wire.h>
 
@@ -28,10 +28,10 @@ int main()
   mdelayc(500);
   setPinState(LED, LOW);
 #endif
-  setupPins();
+  matrix_init();
   uart_init();
   while (true) {
-    scan_loop();
+    matrix_scan(NULL, NULL, NULL);
     // disable ADC
     ADCSRA = 0;  
   
