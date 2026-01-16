@@ -6,7 +6,7 @@
 #include <hal/uart.h>
 #include "config.h"
 
-#define BUF_SIZE_BITS 5
+#define BUF_SIZE_BITS 6
 typedef struct {
     char buff[1 << BUF_SIZE_BITS];
     volatile uint8_t i;
@@ -18,7 +18,7 @@ static rbuff_t tx = {{0}, 0, 0};
 // Tie putchar() to printf
 int putchar(int c) {
     uint8_t newj = (tx.j+1) % sizeof(tx.buff);
-    //while (newj == tx.i);
+    while (newj == tx.i);
     tx.buff[tx.j] = c;
     tx.j = newj;
     IE2 |= UCA0TXIE;                       // Enable USCI_A0 TX interrupt since we added a character to the buffer
