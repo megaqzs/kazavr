@@ -9,7 +9,7 @@ to use it you first have to configure it with the appropriate configuration for 
 then you can build it using `pio run -e [mcu]`
 and finaly you need to flash the built firmware using the appropriate method for your mcu.
 the Currently supported mcus are
-* msp430g2x53
+* msp430 (ti msp430g2453)
 * nano (atmega328p/arduino nano)
 # Can I use it in my commercial product?
 this project is licensed under the GPLv3 license, which means that in order to use it in your product you must provide
