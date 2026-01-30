@@ -8,3 +8,4 @@
 
 // usefull for pin group manipulation
 #define ACTIVE_LSB(x) ((x)&(~((x)-1)))
+#define FOR_GROUP_PINS(pins, pin) for (; pins != 0; pins ^= ACTIVE_LSB(pins), pin++)

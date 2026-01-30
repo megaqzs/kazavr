@@ -78,7 +78,6 @@ __interrupt void timer_loop_isr (void) {
     TA0CTL = MC_0; // stop timer in interrupt
     __bis_SR_register(GIE); // allow interrupts in order for uart to function
     bool active = matrix_scan(&sgrps, &sgrps_size, &scan_value); // actively scan the keys in the matrix
-    while (tx_busy()); // wait for bytes to be sent
     if (active) {
         // Timer_A Configuration
         // TASSEL_1: ACLK 
@@ -106,6 +105,7 @@ __interrupt void timer_loop_isr (void) {
     // After this ISR ends, the CPU automatically returns to the sleep state 
     // SR is reset, so OSCOFF and GIE are set to the value outside the isr
     // unless they were modified by the isr
+    // if data is still being sent then aclk will continue to run until no data is left in the buffer
 }
 
 int main(void)
