@@ -82,7 +82,7 @@ int wpos_upd(uint8_t row, uint8_t column, bool pressed) {
         }
     };
 
-    if (evt.position >= 0)
+    if (evt.data.key_position_event.position >= 0)
         return split_peripheral_wired_report_event(&evt);
     return -1;
 }
