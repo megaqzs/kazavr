@@ -65,7 +65,6 @@ void zmk_debounce_update(struct zmk_debounce_state *state, const bool active, co
 #endif
 
     state->counter = 0;
-state_change:
     state->pressed = !state->pressed;
     state->changed = true;
 }
