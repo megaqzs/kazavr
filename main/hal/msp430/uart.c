@@ -20,6 +20,7 @@ int putchar(int c) {
     uint8_t newj = (tx.j+1) % sizeof(tx.buff);
     while (newj == tx.i);
     tx.buff[tx.j] = c;
+    IE2 &= ~UCA0TXIE;                      // Disable USCI_A0 TX interrupt
     tx.j = newj;
     IE2 |= UCA0TXIE;                       // Enable USCI_A0 TX interrupt since we added a character to the buffer
     return c;
@@ -36,10 +37,11 @@ __interrupt void USCI0TX_ISR(void) {
 
 #define FREQ F_CPU
 #define BMULT (FREQ/BAUD)
+// baud rate modulation, calculated from 3 bits past the radix point of the baudrate multiplier (which is floored)
 #define BMOD ((16*FREQ+BAUD)/BAUD/2-8*BMULT)
 
 bool tx_busy(void) {
-    return IE2 & UCA0TXIE;
+    return tx.i != tx.j;
 }
 
 void uart_init(void) {
