@@ -11,6 +11,3 @@ and finaly you need to flash the built firmware using the appropriate method for
 the Currently supported mcus are
 * msp430 (ti msp430g2453)
 * nano (atmega328p/arduino nano)
-# Can I use it in my commercial product?
-this project is licensed under the GPLv3 license, which means that in order to use it in your product you must provide
-any modifications you have made to this code base to your consumers as implied by the gpl license.
